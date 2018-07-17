@@ -4,6 +4,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var session = require('express-session')({
+  secret:'keyboard cat',
+  cookie:{maxAge:800000}
+});
+var iosession = require('express-socket.io-session')(session,{autoSave:true});
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -14,7 +20,7 @@ var io = require('socket.io')(server);
 server.listen(3000);
 
 let firstSocket;
-
+io.use(iosession);
 io.on("connection",function (socket) {
 
   socket.on('req',function (data,cb) {
@@ -23,7 +29,10 @@ io.on("connection",function (socket) {
   })
 
   socket.on("say",data=>{
-    io.emit('newsay',data + " --创建时间:"+new Date());
+    const num = ++socket.handshake.session.num;
+    // socket.handshake.session.save();
+    // io.emit('newsay',data + " --创建时间:"+new Date());
+    io.emit('newsay','num = '+num);
   });
   // if (firstSocket) {
   //   console.log("firstSocket === socket",firstSocket === socket);
@@ -40,6 +49,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);

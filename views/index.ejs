@@ -10,6 +10,7 @@
   </head>
   <body>
     <h1><%= title %></h1>
+    <h1><%= num %></h1>
     <p>Welcome to <%= title %></p>
     <div class="list">
 
@@ -17,8 +18,8 @@
     <div class="list2">
 
     </div>
-    <input type="text" onchange="say(event)" name="" value="">
     <input type="text" onchange="say2(event)" name="" value="">
+    <input type="text" onchange="say(event)" name="" value="">
     <script type="text/javascript">
     const socket = io.connect();
     const listdom = document.querySelector(".list");
@@ -29,8 +30,8 @@
         console.log('有了响应');
         // console.log(res);
 
-        const h2dom = document.createElement("h2");
-        h2dom.innerText = res+Date();
+        const h2dom = document.createElement("h3");
+        h2dom.innerText = '标题:'+res;
         list2dom.appendChild(h2dom);
       });
     }
